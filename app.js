@@ -30,12 +30,47 @@ app.get("/", function(req, res) {
     res.redirect("/blogs");
 });
 
+// Index route
 app.get("/blogs", function(req, res) {
     Blog.find({}, function(err, blogs) {
         if(err) {
             res.send(err);
         } else {
             res.render("index", {blogs: blogs});
+        }
+    });
+});
+
+// New route
+app.get("/blogs/new", function(req, res) {
+    res.render("new");
+});
+
+// Create route
+app.post("/blogs", function(req, res) {
+    var title = req.body.blog.title;
+    var image = req.body.blog.image;
+    var body = req.body.blog.body;
+    Blog.create({
+        title: title,
+        image: image,
+        body: body
+    }, function(err, newBlog) {
+        if(err) {
+            res.send(err);
+        } else {
+            res.redirect("/blogs");
+        }
+    });
+});
+
+// Show route
+app.get("/blogs/:id", function(req, res) {
+    Blog.findById(req.params.id, function(err, foundBlog) {
+        if(err) {
+            res.send(err);
+        } else {
+            res.render("show", {blog: foundBlog});
         }
     });
 });
